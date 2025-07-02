@@ -1,4 +1,5 @@
 from math import pi,sqrt
+from operator import add, mul
 
 def fib(n):
     """It will return the n th number of fibonacci"""
@@ -44,7 +45,7 @@ def summation(n,term):
 
 # functions as return values
 
-def make_addder(n):
+def make_adder(n):
     """Return a function that takes one argument called k and return k+n
     >>> add_three=make_adder(3)
     >>> add_three(4)
@@ -53,6 +54,17 @@ def make_addder(n):
     def adder(k):
         return k+n
     return adder
+add_three=make_adder(3)
+result=add_three(4)
+
+def curry2(f):
+    def g(x):
+        def h(y):
+            return f(x,y)
+        return h
+    return g
+m=curry2(add)
+
 
 
 
