@@ -47,9 +47,13 @@ class VendingMachine:
     >>> w.vend()
     'Here is your soda.'
     """
+    stock = 0
+    balance = 0
     def __init__(self, product, price):
         """Set the product and its price, as well as other instance attributes."""
         "*** YOUR CODE HERE ***"
+        self.product = product
+        self.price = price
 
     def restock(self, n):
         """Add n to the stock and return a message about the updated stock level.
@@ -57,6 +61,8 @@ class VendingMachine:
         E.g., Current candy stock: 3
         """
         "*** YOUR CODE HERE ***"
+        self.stock += n
+        return f'Current {self.product} stock: {self.stock}'
 
     def add_funds(self, n):
         """If the machine is out of stock, return a message informing the user to restock
@@ -69,6 +75,11 @@ class VendingMachine:
         E.g., Current balance: $4
         """
         "*** YOUR CODE HERE ***"
+        if self.stock == 0:
+            return f'Nothing left to vend. Please restock. Here is your ${n}.'
+        else:
+            self.balance += n
+            return f'Current balance: ${self.balance}'
 
     def vend(self):
         """Dispense the product if there is sufficient stock and funds and
@@ -82,6 +93,21 @@ class VendingMachine:
               Please add $3 more funds.
         """
         "*** YOUR CODE HERE ***"
+        if self.balance >= self.price and self.stock >= 1:
+            change = self.balance - self.price
+            self.balance = 0
+            self.stock -= 1
+            if change:
+                return f'Here is your {self.product} and ${change} change.'
+            else:
+                return f'Here is your {self.product}.'
+        else:
+            if self.stock:
+                add = self.price - self.balance
+                return f'Please add ${add} more funds.'
+            else:
+                return f'Nothing left to vend. Please restock.'
+
 
 
 def store_digits(n):
@@ -104,6 +130,11 @@ def store_digits(n):
     >>> print("Do not use str or reversed!") if any([r in cleaned for r in ["str", "reversed"]]) else None
     """
     "*** YOUR CODE HERE ***"
+    rest = ()
+    while n:
+        rest = Link(n % 10, rest)
+        n = n //10
+    return rest
 
 
 def deep_map_mut(func, s):
@@ -126,6 +157,15 @@ def deep_map_mut(func, s):
     <9 <16> 25 36>
     """
     "*** YOUR CODE HERE ***"
+    if s is Link.empty:
+        return s
+    elif isinstance(s.first,Link):
+        deep_map_mut(func, s.first)
+        deep_map_mut(func, s.rest)
+    else:
+        s.first = func(s.first)
+        deep_map_mut(func, s.rest)
+
 
 
 def two_list(vals, counts):
@@ -147,6 +187,13 @@ def two_list(vals, counts):
     Link(1, Link(1, Link(3, Link(3, Link(2)))))
     """
     "*** YOUR CODE HERE ***"
+    s = ()
+    for i in range(len(vals)-1, -1, -1):
+        while counts[i]:
+            s = Link(vals[i], s)
+            counts[i] -= 1
+    return s
+        
 
 
 class Link:
